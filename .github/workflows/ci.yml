@@ -14,10 +14,12 @@ jobs:
         with:
           node-version: 22
 
+      - uses: oven-sh/setup-bun@v2
+
       - uses: dtolnay/rust-toolchain@stable
 
-      - run: npm ci
+      - run: bun install
       - run: cargo check
       - run: npx napi build --platform
-      - run: npx tsc --noEmit
-      - run: npx vitest run
+      - run: bunx tsgo --noEmit
+      - run: bunx vitest run
