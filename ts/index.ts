@@ -1,62 +1,55 @@
 import { minifyJs as _minifyJs, minifyCss as _minifyCss } from './binding'
+import { Prettify } from './types'
 
 // ---------------------------------------------------------------------------
 // JS Options & Result
 // ---------------------------------------------------------------------------
 
-export interface JsOptions {
+export type JsOptions = Prettify<{
   /** Shorten variable names. @default true */
   mangle?: boolean
-
   /** Dead code elimination & constant folding. @default true */
   compress?: boolean
-
   /** Generate a source map. @default false */
   sourceMap?: boolean
-
   /** Filename — used for source maps and error messages. */
   filename?: string
-
-  /**
-   * Treat as ES module.
-   * @default auto-detected from filename extension (.mjs = module)
-   */
+  /** Treat as ES module. @default auto-detected from filename extension (.mjs = module) */
   module?: boolean
-}
+}>
 
 // ---------------------------------------------------------------------------
 // CSS Options & Result
 // ---------------------------------------------------------------------------
 
-export interface CssOptions {
+export type CssOptions = Prettify<{
   /** Generate a source map. @default false */
   sourceMap?: boolean
-
   /** Filename — used for source maps and error messages. */
   filename?: string
-}
+}>
 
 // ---------------------------------------------------------------------------
 // Shared result types with source map narrowing
 // ---------------------------------------------------------------------------
 
-export interface MinifyResult {
+export type MinifyResult = Prettify<{
   /** The minified code. */
   code: string
   /** Source map JSON string. Only present when `sourceMap: true`. */
   map: string | null
-}
+}>
 
-export interface MinifyResultWithMap {
+export type MinifyResultWithMap = Prettify<{
   code: string
   /** Source map JSON string. Guaranteed present. */
   map: string
-}
+}>
 
-export interface MinifyResultWithoutMap {
+export type MinifyResultWithoutMap = Prettify<{
   code: string
   map: null
-}
+}>
 
 // ---------------------------------------------------------------------------
 // minifyJs — overloads for source map narrowing
