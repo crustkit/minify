@@ -1,7 +1,7 @@
 {
   "name": "@crustkit/minify",
   "version": "0.1.0",
-  "description": "JavaScript, CSS, and HTML minification. Zero config, great defaults, delightful DX.",
+  "description": "JavaScript and CSS minification. Zero config, great defaults, delightful DX.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -36,7 +36,6 @@
     "minifier",
     "javascript",
     "css",
-    "html",
     "terser",
     "uglify",
     "compress",
@@ -59,14 +58,25 @@
     "build:ts": "tsup",
     "prepublishOnly": "napi prepublish -t npm && npm run build:ts",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "devDependencies": {
     "@napi-rs/cli": "^2.18.0",
     "@types/node": "^25.5.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260327.2",
     "terser": "^5.37.0",
     "tsup": "^8.0.0",
-    "typescript": "^5.7.0",
+    "typescript": "^5.9.3",
     "vitest": "^3.0.0"
+  },
+  "optionalDependencies": {
+    "@crustkit/minify-darwin-arm64": "0.1.0",
+    "@crustkit/minify-darwin-x64": "0.1.0",
+    "@crustkit/minify-freebsd-x64": "0.1.0",
+    "@crustkit/minify-linux-arm64-gnu": "0.1.0",
+    "@crustkit/minify-linux-arm64-musl": "0.1.0",
+    "@crustkit/minify-linux-x64-gnu": "0.1.0",
+    "@crustkit/minify-linux-x64-musl": "0.1.0",
+    "@crustkit/minify-win32-x64-msvc": "0.1.0"
   }
 }

@@ -1,8 +1,8 @@
 # @crustkit/minify
 
-JS and CSS minification. Zero config, great defaults, typed to the bone.
+JS and CSS minification that just works.
 
-Built on [oxc](https://oxc.rs) (JS) and [Lightning CSS](https://lightningcss.dev) (CSS). Rust under the hood, npm on the surface.
+Terser needs a config file. cssnano needs PostCSS. Neither has real TypeScript support. This is one import, zero config, and typed all the way down.
 
 ## Install
 
@@ -13,57 +13,57 @@ npm install @crustkit/minify
 ## Usage
 
 ```ts
-import { minifyJs, minifyCss, minify } from '@crustkit/minify'
+import { minifyJs, minifyCss } from '@crustkit/minify'
 
-// JS -- zero config
 const { code } = minifyJs('var x = 1 + 2; console.log(x)')
 // => 'console.log(3);'
 
-// CSS -- zero config
+const { code: css } = minifyCss('.foo { color: red; margin: 0px; }')
+// => '.foo{color:red;margin:0}'
+```
+
+That's it. No config files. No plugins. No pipeline.
+
+## Types that actually help
+
+When you pass `sourceMap: true`, TypeScript narrows the return type. `map` is a `string`, not `string | null`. No runtime checks needed.
+
+```ts
+// Without source map — map is null
+const { code, map } = minifyJs(src)
+//                     map: string | null
+
+// With source map — map is guaranteed
+const { code, map } = minifyJs(src, { sourceMap: true, filename: 'app.js' })
+//                     map: string ✓
+```
+
+CSS functions only accept CSS options. Passing `mangle` or `compress` is a type error, not a silent no-op.
+
+```ts
+minifyCss(code, { mangle: true })
+//                ^^^^^^ — type error, not a runtime surprise
+```
+
+## CSS without PostCSS
+
+Lightning CSS handles vendor prefixing, nesting, and modern CSS syntax natively. No PostCSS pipeline, no extra dependencies.
+
+```ts
 const { code } = minifyCss('.foo { color: red; margin: 0px; }')
 // => '.foo{color:red;margin:0}'
-
-// Auto-detect from filename
-const result = minify(code, { filename: 'app.js' })
-const result = minify(code, { filename: 'style.css' })
 ```
 
-### Source maps
-
-When you pass `sourceMap: true`, the return type narrows. TypeScript knows `map` is a `string`, not `string | null`.
+## Auto-detect from filename
 
 ```ts
-const { code, map } = minifyJs(src, { sourceMap: true, filename: 'app.js' })
-//                                     ^-- map: string (guaranteed)
+import { minify } from '@crustkit/minify'
+
+minify(code, { filename: 'app.js' })    // → JS
+minify(code, { filename: 'style.css' }) // → CSS
 ```
 
-### JS options
-
-```ts
-minifyJs(code, {
-  mangle: true,       // shorten variable names (default: true)
-  compress: true,     // dead code elimination (default: true)
-  sourceMap: false,    // generate source map (default: false)
-  filename: 'app.js', // for source maps and error messages
-  module: true,        // treat as ES module
-})
-```
-
-### CSS options
-
-CSS functions only accept CSS options. Passing `mangle` or `compress` is a type error.
-
-```ts
-minifyCss(code, {
-  sourceMap: false,
-  filename: 'style.css',
-})
-
-minifyCss(code, { mangle: true })
-//                ^^^^^^ -- type error
-```
-
-### Terser drop-in
+## Switching from terser
 
 Change one import. Everything else stays the same.
 
@@ -80,12 +80,32 @@ const result = await minify(code, {
 })
 ```
 
-Returns a Promise for API compatibility with terser. The work is synchronous in Rust.
+Returns a Promise for API compatibility. The work is synchronous under the hood.
 
-## What it does
+## JS options
 
-- **JS**: Parses with oxc, compresses (constant folding, dead code elimination, inlining), mangles variable names, generates source maps. Handles ES modules, CommonJS, JSX, TypeScript.
-- **CSS**: Parses with Lightning CSS, minifies whitespace, shortens values (`0px` to `0`), handles vendor prefixing, nesting, and modern CSS syntax.
+```ts
+minifyJs(code, {
+  mangle: true,       // shorten variable names (default: true)
+  compress: true,     // dead code elimination (default: true)
+  sourceMap: false,    // generate source map (default: false)
+  filename: 'app.js', // for source maps and error messages
+  module: true,        // treat as ES module
+})
+```
+
+## CSS options
+
+```ts
+minifyCss(code, {
+  sourceMap: false,        // generate source map (default: false)
+  filename: 'style.css',  // for source maps and error messages
+})
+```
+
+## Under the hood
+
+Built on [oxc](https://oxc.rs) (JS) and [Lightning CSS](https://lightningcss.dev) (CSS). Rust under the hood, npm on the surface.
 
 ## License
 
