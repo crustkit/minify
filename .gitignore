@@ -1,0 +1,13 @@
+target/
+node_modules/
+dist/
+*.node
+wasm/
+.env*
+
+# napi artifacts
+npm/
+
+# OS
+.DS_Store
+Thumbs.db
