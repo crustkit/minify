@@ -1,4 +1,5 @@
 import { minifyJs as _minifyJs, minifyCss as _minifyCss } from './binding'
+import { detectLanguage } from './detect'
 import { Prettify } from './types'
 
 // ---------------------------------------------------------------------------
@@ -256,20 +257,3 @@ export async function terser(
   }
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-const CSS_EXTS = new Set(['.css', '.scss', '.sass', '.less'])
-
-function detectLanguage(options?: MinifyOptions): 'js' | 'css' {
-  if (options && 'language' in options && options.language) return options.language
-
-  const filename = 'filename' in (options ?? {}) ? (options as { filename?: string })?.filename : undefined
-  if (filename) {
-    const ext = filename.slice(filename.lastIndexOf('.'))
-    if (CSS_EXTS.has(ext)) return 'css'
-  }
-
-  return 'js'
-}
