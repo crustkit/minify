@@ -3,7 +3,7 @@ name = "crustkit-minify"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
-description = "JavaScript, CSS, and HTML minification — fast, zero-config, delightful DX"
+description = "JavaScript and CSS minification. Zero-config, delightful DX"
 
 [lib]
 crate-type = ["cdylib"]
